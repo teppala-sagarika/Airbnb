@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utilities/wrapAsync.js");
 const ExpressError = require("../utilities/ExpressError.js");
-const { listingSchema, reviewSchema } = require("../schema.js");
+const { listingSchema } = require("../schema.js");
 const Listing = require("../models/listing.js");
 
 //middleware
@@ -14,7 +14,7 @@ const validateListing = (req, res, next) => {
     } else {
         next();
     }
-}
+};
 
 //Index Route
 router.get("/", wrapAsync(async(req, res) => {
