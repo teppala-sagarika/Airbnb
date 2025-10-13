@@ -11,6 +11,7 @@ body {
 
 .container {
     flex: 1;
+    overflow-x: hidden;
 }
 
 
@@ -61,16 +62,22 @@ body {
     background-color: #ebebeb;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: space-evenly;
+    justify-content: space-evenly;
+    align-items: center;
     text-align: center;
 }
 
 
 /*Cards*/
 
-.card {
+#title {
+    color: #fe424d;
+    font-weight: bold;
+}
+
+.listing-card {
     border: none !important;
+    margin-bottom: 2rem;
 }
 
 .card-img-top {
@@ -123,4 +130,60 @@ body {
 .show-card {
     padding-left: 0;
     padding-right: 0;
+}
+
+
+/*Add Review Style*/
+
+.review-heading {
+    color: #fe424d;
+}
+
+.review-form {
+    border: 2px solid #fe424d;
+    border-radius: 10px;
+    padding: 20px;
+    background: #fff5f6;
+}
+
+
+/* Range slider override */
+
+.review-form .form-range {
+    accent-color: #fe424d !important;
+    /* modern browsers */
+}
+
+.review-form .form-range::-webkit-slider-thumb {
+    background-color: #fe424d !important;
+}
+
+.review-form .form-range::-moz-range-thumb {
+    background-color: #fe424d !important;
+}
+
+.custom-textarea {
+    border: 1px solid #fe424d !important;
+    border-radius: 8px !important;
+}
+
+.custom-textarea:focus {
+    outline: none !important;
+    border-color: #fe424d !important;
+    box-shadow: 0 0 5px rgba(254, 66, 77, 0.5) !important;
+}
+
+.custom-btn {
+    border: 2px solid #fe424d !important;
+    color: #fe424d !important;
+    font-weight: 600 !important;
+    background-color: white !important;
+    border-radius: 25px !important;
+    padding: 8px 20px !important;
+    transition: 0.3s;
+}
+
+.custom-btn:hover {
+    background-color: #fe424d !important;
+    color: white !important;
 }
