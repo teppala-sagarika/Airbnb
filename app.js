@@ -10,6 +10,8 @@ const ExpressError = require("./utilities/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 const Review = require("./models/reviews.js");
 
+const listings = require("./routes/listing.js");
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
@@ -55,74 +57,7 @@ const validateReview = (req, res, next) => {
     }
 }
 
-//Index Route
-app.get("/listings", wrapAsync(async(req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index", { allListings });
-}));
-
-//New Route 
-//(u need to create it above the show route bcoz it consideres 'new' as an 'id')
-app.get("/listings/new", (req, res) => {
-    res.render("listings/new");
-});
-
-//Show Route
-app.get("/listings/:id", wrapAsync(async(req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
-    res.render("listings/show", { listing });
-}));
-
-//Post/Create Route
-app.post("/listings", validateListing, wrapAsync(async(req, res, next) => {
-    console.log(req.body);
-    let listing = req.body.listing;
-    listing.price = Number(listing.price);
-    const newListing = new Listing(listing);
-    await newListing.save();
-    console.log("Listing saved:", newListing);
-    res.redirect("/listings");
-}));
-
-//Edit Route
-app.get("/listings/:id/edit", wrapAsync(async(req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id);
-    res.render("listings/edit", { listing });
-}));
-
-//Update Route
-app.put("/listings/:id", validateListing, wrapAsync(async(req, res) => {
-    let { id } = req.params;
-    await Listing.findByIdAndUpdate(id, {...req.body.listing }); //destructuring
-    res.redirect(`/listings/${id}`);
-}));
-
-// //Delete Route
-// app.delete("/listings/:id", wrapAsync(async(req, res, next) => {
-//     const { id } = req.params;
-//     const deleted = await Listing.findByIdAndDelete(id);
-//     if (!deleted) {
-//         throw new ExpressError(404, "Listing not found");
-//     }
-//     res.redirect("/listings");
-// }));
-
-app.delete("/listings/:id", async(req, res) => {
-    try {
-        const { id } = req.params;
-        const deletedListing = await Listing.findByIdAndDelete(id);
-        if (!deletedListing) {
-            console.log("Listing not found, but redirecting anyway");
-        }
-        res.redirect("/listings");
-    } catch (err) {
-        console.log("Error during deletion:", err);
-        res.redirect("/listings");
-    }
-});
-
+app.use("/listings", listings);
 
 //Reviews (Post Route)
 app.post("/listings/:id/reviews", validateReview, wrapAsync(async(req, res) => {
