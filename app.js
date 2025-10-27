@@ -57,10 +57,14 @@ passport.deserializeUser(User.deserializeUser());
 
 //middleware
 app.use((req, res, next) => {
-    res.locals.success = req.flash("success");
-    res.locals.error = req.flash("error");
+    const success = req.flash("success").filter(msg => msg.trim().length > 0);
+    const error = req.flash("error").filter(msg => msg.trim().length > 0);
+    res.locals.success = success;
+    res.locals.error = error;
+    res.locals.currUser = req.user;
     next();
 });
+
 
 // app.get("/demoUser", async(req, res) => {
 //     let fakeUser = new User({

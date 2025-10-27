@@ -10,8 +10,8 @@ const listingSchema = new Schema({
     description: String,
     image: {
         type: String,
-        default: "https://unsplash.com/photos/snow-capped-mountain-peak-bathed-in-golden-sunlight-B9fkw_aO6fo",
-        set: (v) => v === "" ? "https://unsplash.com/photos/snow-capped-mountain-peak-bathed-in-golden-sunlight-B9fkw_aO6fo" : v
+        default: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+        set: (v) => v === "" ? "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" : v
     },
     price: {
         type: Number,
@@ -22,7 +22,11 @@ const listingSchema = new Schema({
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: "Review"
-    }]
+    }],
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
 });
 
 listingSchema.post("findOneAndDelete", async(listing) => {
