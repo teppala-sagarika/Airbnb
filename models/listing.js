@@ -9,9 +9,8 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        type: String,
-        default: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-        set: (v) => v === "" ? "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" : v
+        url: String,
+        filename: String,
     },
     price: {
         type: Number,
@@ -26,6 +25,17 @@ const listingSchema = new Schema({
     owner: {
         type: Schema.Types.ObjectId,
         ref: "User",
+    },
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'], // 'Point' is required for GeoJSON
+            required: true
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            required: true
+        }
     },
 });
 

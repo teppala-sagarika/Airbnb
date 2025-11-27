@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV != "production") {
+    require('dotenv').config();
+}
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -22,7 +26,8 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.engine("ejs", ejsMate);
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderLust"
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderLust"
+const dbUrl = process.env.ATLASDB_URL;
 
 main().then(() => {
         console.log("Connected to DB");
@@ -32,7 +37,7 @@ main().then(() => {
     });
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }
 
 const sessionOptions = {
@@ -40,10 +45,6 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: true,
 };
-
-app.get("/", (req, res) => {
-    res.send("Hi,I am Root!!");
-});
 
 app.use(session(sessionOptions));
 app.use(flash());
