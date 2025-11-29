@@ -1,6 +1,29 @@
 const axios = require("axios");
 const Listing = require("../models/listing");
 
+const categoryKeywords = {
+    beach: ["beach", "sunset", "sea"],
+    rooms: ["room", "single", "double"],
+    amazingviews: ["view", "mountain", "sky"],
+    iconic_cities: ["london", "paris", "tokyo"],
+    camping: ["camp", "tent"],
+    cabins: ["cabin"],
+    OMG: ["weird", "unusual", "strange"],
+    farms: ["farm", "field", "rural"],
+    castles: ["castle", "royal"]
+};
+
+function detectCategorySmart(listing) {
+    const text = `${listing.title} ${listing.location}`.toLowerCase();
+
+    for (let category in categoryKeywords) {
+        if (categoryKeywords[category].some(word => text.includes(word))) {
+            return category;
+        }
+    }
+    return "trending"; // default
+}
+
 module.exports.index = async(req, res) => {
     const allListings = await Listing.find({});
     res.render("listings/index", { allListings });
@@ -13,9 +36,14 @@ module.exports.renderNewListing = (req, res) => {
 module.exports.showListing = async(req, res) => {
     let { id } = req.params;
     const listing = await Listing.findById(id).populate({ path: "reviews", populate: { path: "author" } }).populate("owner");
+
+    console.log("LISTING DATA --->", listing);
     if (!listing) {
         req.flash("error", "The listing you requested for doesn't exist!");
         return res.redirect("/listings");
+    }
+    if (!listing.owner) {
+        listing.owner = { username: "Sagarika" }; // Temporary fake owner
     }
     res.render("listings/show", { listing });
 };
@@ -47,6 +75,18 @@ module.exports.createListing = async(req, res, next) => {
         const newListing = new Listing(req.body.listing);
         newListing.owner = req.user._id;
 
+
+        // 🚀 SMART CATEGORY DETECTION
+        newListing.category = detectCategorySmart(newListing);
+
+        // Attach image if present
+        if (req.file) {
+            newListing.image = {
+                url: req.file.path,
+                filename: req.file.filename,
+            };
+        }
+
         // Attach image if present
         if (req.file) {
             newListing.image = {
@@ -62,6 +102,8 @@ module.exports.createListing = async(req, res, next) => {
                 coordinates: coords,
             };
         }
+        // Detect category before saving
+        newListing.category = detectCategorySmart(newListing);
 
         await newListing.save();
         req.flash("success", "New Listing Created!");
@@ -91,6 +133,7 @@ module.exports.updateListing = async(req, res) => {
     const listing = await Listing.findByIdAndUpdate(id, {...req.body.listing }); //destructuring 
 
     try {
+        listing.category = detectCategorySmart(listing);
         // Forward Geocoding with Geoapify
         const location = req.body.listing.location;
         const country = req.body.listing.country;
@@ -114,7 +157,7 @@ module.exports.updateListing = async(req, res) => {
         }
 
         // Handle image updates
-        if (typeof req.file !== "undefined") {
+        if (typeof req.file) {
             listing.image = {
                 url: req.file.path,
                 filename: req.file.filename,

@@ -21,6 +21,16 @@
                     <img src="<%=originalImageUrl%>" alt="image_preview">
                 </div>
                 <br>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <% const categories = ["trending", "rooms", "amazingviews", "iconic cities", "amazing pools", "beach", "cabins", "OMG", "farms", "camping", "castles"]; %>
+
+                        <% categories.forEach(cat => { %>
+                            <a href="/listings/category/<%= cat %>" class="btn btn-outline-dark btn-sm">
+                                <%= cat %>
+                            </a>
+                            <% }) %>
+                </div>
+                <br>
                 <div class="md-3">
                     <label class="form-label" for="image">Upload New Image</label>
                     <input name="listing[image]" type="file" class="form-control">

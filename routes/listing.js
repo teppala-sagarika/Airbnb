@@ -7,6 +7,7 @@ const listingController = require("../controllers/listing.js");
 const multer = require('multer');
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
+const { detectCategory } = require("../utilities/categoryDetect");
 
 router.route("/")
     .get(wrapAsync(listingController.index))
@@ -15,6 +16,13 @@ router.route("/")
 //New Route 
 //(u need to create it above the show route bcoz it consideres 'new' as an 'id')
 router.get("/new", isLoggedIn, listingController.renderNewListing);
+
+//category
+router.get("/category/:category", async(req, res) => {
+    const { category } = req.params;
+    const listings = await Listing.find({ category }); // Fetch from DB
+    res.render("listings/index", { allListings: listings });
+});
 
 router.route("/:id")
     .get(wrapAsync(listingController.showListing))
