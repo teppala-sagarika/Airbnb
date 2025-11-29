@@ -24,6 +24,35 @@ router.get("/category/:category", async(req, res) => {
     res.render("listings/index", { allListings: listings });
 });
 
+
+//Search route
+router.get("/search", async(req, res) => {
+    const { query } = req.query;
+
+    if (!query) {
+        return res.redirect("/listings");
+    }
+
+    // Case-insensitive search
+    const regex = new RegExp(query, "i");
+
+    try {
+        const results = await Listing.find({
+            $or: [
+                { title: regex },
+                { location: regex },
+                { country: regex },
+                { category: regex },
+                { price: { $lte: Number(query) || 0 } } // price <= query value
+            ]
+        });
+        res.render("listings/searchResults.ejs", { results, query });
+    } catch (error) {
+        console.error(error);
+        res.redirect("/listings");
+    }
+});
+
 router.route("/:id")
     .get(wrapAsync(listingController.showListing))
     .put(isLoggedIn, isOwner, upload.single('listing[image]'), validateListing, wrapAsync(listingController.updateListing))
