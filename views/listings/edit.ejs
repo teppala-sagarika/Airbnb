@@ -21,14 +21,17 @@
                     <img src="<%=originalImageUrl%>" alt="image_preview">
                 </div>
                 <br>
-                <div class="d-flex flex-wrap gap-2 mb-4">
-                    <% const categories = ["trending", "rooms", "amazingviews", "iconic cities", "amazing pools", "beach", "cabins", "OMG", "farms", "camping", "castles"]; %>
-
-                        <% categories.forEach(cat => { %>
-                            <a href="/listings/category/<%= cat %>" class="btn btn-outline-dark btn-sm">
-                                <%= cat %>
-                            </a>
-                            <% }) %>
+                <div class="md-3">
+                    <label class="form-label" for="category">Category</label>
+                    <select name="listing[category]" class="form-select" required>
+        <% const categories = ["trending", "rooms", "amazingviews", "iconic cities", "amazing pools", "beach", "cabins", "OMG", "farms", "camping", "castles"]; %>
+        <% categories.forEach(cat => { %>
+            <option value="<%= cat %>" <%= listing.category === cat ? "selected" : "" %> >
+                <%= cat %>
+            </option>
+        <% }) %>
+    </select>
+                    <div class="invalid-feedback">Please select a Category</div>
                 </div>
                 <br>
                 <div class="md-3">
