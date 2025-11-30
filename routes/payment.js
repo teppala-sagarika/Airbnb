@@ -7,4 +7,7 @@ const { isLoggedIn } = require("../middleware.js");
 //initiate the payment process for a specific listing
 router.post("/:id/checkout", isLoggedIn, wrapAsync(paymentController.createPaymentIntent));
 
+// redirects to after successful payment
+router.get("/:id/booked", isLoggedIn, wrapAsync(paymentController.confirmBooking));
+
 module.exports = router;

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Listing = require("../models/listing");
+const Booking = require("../models/booking");
 
 const categoryKeywords = {
     beach: ["beach", "sunset", "sea"],
@@ -35,16 +36,43 @@ module.exports.renderNewListing = (req, res) => {
 
 module.exports.showListing = async(req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate({ path: "reviews", populate: { path: "author" } }).populate("owner");
+
+    // Fetch the listing, reviews, and owner
+    const listing = await Listing.findById(id).populate({
+        path: "reviews",
+        populate: { path: "author" }
+    }).populate("owner");
+
+    // 1. Error Handling Check
     if (!listing) {
         req.flash("error", "The listing you requested for doesn't exist!");
         return res.redirect("/listings");
     }
+
+    // 2. Temporary Owner Assignment (if necessary)
     if (!listing.owner) {
         listing.owner = { username: "Sagarika" }; // Temporary fake owner
     }
-    res.render("listings/show", { listing });
+
+    // 3. NEW LOGIC: Check if the current user has a confirmed booking for this listing
+    let isBooked = false;
+    // Ensure a user is logged in before querying the database
+    if (req.user) {
+        const booking = await Booking.findOne({
+            listing: id,
+            user: req.user._id,
+            status: 'confirmed' // Only check confirmed bookings
+        });
+
+        if (booking) {
+            isBooked = true;
+        }
+    }
+
+    // 4. Render the view, passing the new isBooked variable
+    res.render("listings/show", { listing, isBooked });
 };
+
 module.exports.createListing = async(req, res, next) => {
     try {
         const { location, country } = req.body.listing;
