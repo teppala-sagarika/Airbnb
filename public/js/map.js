@@ -43,6 +43,26 @@ async function showListingOnMap() {
 // Run function
 showListingOnMap();
 
+// Fix initial render issues
+setTimeout(() => {
+    map.invalidateSize();
+}, 200);
+
+// Resize on screen change
+window.addEventListener("resize", () => {
+    map.invalidateSize();
+});
+
+// Resize when navbar opens (mobile)
+const navbarToggler = document.querySelector(".navbar-toggler");
+if (navbarToggler) {
+    navbarToggler.addEventListener("click", () => {
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 300);
+    });
+}
+
 map.on("click", function(e) {
     const { lat, lng } = e.latlng;
     L.popup()
