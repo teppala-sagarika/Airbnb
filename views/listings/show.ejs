@@ -45,16 +45,18 @@
                         </form>
                     </div>
                     <%}%>
-                        <% if(isBooked) { %>
-                            <button class="btn btn-primary offset-2" disabled>Booked!
+                        <% if (!currUser._id.equals(listing.owner._id)) { %>
+                            <% if(isBooked) { %>
+                                <button class="btn btn-primary offset-2" disabled>Booked!
             </button>
-                            <% } else { %>
-                                <form method="POST" action="/listings/<%=listing._id%>/checkout">
-                                    <button class="btn btn-primary offset-2" id="book-now">
+                                <% } else { %>
+                                    <form method="POST" action="/listings/<%=listing._id%>/checkout">
+                                        <button class="btn btn-primary offset-2" id="book-now">
                     Book Now
                 </button>
-                                </form>
-                                <% } %>
+                                    </form>
+                                    <% } %>
+                                        <% } %>
             </div>
             <% } %>
                 <div class="col-8 offset-2 mt-2 mb-3">
