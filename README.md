@@ -2,7 +2,7 @@
 
 **WanderLust** is a full-stack travel listing web application where users can explore, book, and manage accommodations worldwide. Built with **Node.js, Express, MongoDB Atlas, EJS templating, and Bootstrap**, it includes **maps, payments, authentication, image optimization, middlewares, Joi validation, and full CRUD functionality**.
 
-**Live Demo:** [WanderLust on Render](https://airbnb-etgh.onrender.com/listings)
+**Live Demo:** [WanderLust on Render](https://wanderlust-gmfy.onrender.com/listings)
 
 ---
 
